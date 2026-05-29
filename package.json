@@ -1,0 +1,35 @@
+{
+  "name": "map-of-sake-seizo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "酒類等製造所マップ（平成26年度以降の新規免許）",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "parse": "tsx scripts/parse.ts",
+    "geocode": "tsx scripts/geocode.ts",
+    "build:data": "npm run parse && npm run geocode",
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "leaflet": "^1.9.4"
+  },
+  "devDependencies": {
+    "@types/leaflet": "^1.9.12",
+    "@types/node": "^22.19.19",
+    "@vitest/coverage-v8": "^4.1.7",
+    "happy-dom": "^20.9.0",
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.2",
+    "vite": "^8.0.14",
+    "vitest": "^4.1.7",
+    "xlsx": "^0.18.5"
+  }
+}
