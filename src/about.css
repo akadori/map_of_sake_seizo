@@ -1,0 +1,77 @@
+.about-page {
+  display: block;
+  height: auto;
+  background: var(--c-bg);
+}
+
+.about-main {
+  max-inline-size: 760px;
+  margin: 0 auto;
+  padding: 32px 24px 64px;
+  line-height: 1.75;
+  color: var(--c-text);
+}
+
+.about-main h1 {
+  font-size: 26px;
+  margin: 8px 0 24px;
+  text-wrap: balance;
+}
+
+.about-main h2 {
+  font-size: 18px;
+  margin: 32px 0 8px;
+  padding-block-end: 4px;
+  border-block-end: 1px solid var(--c-border-dashed);
+  text-wrap: balance;
+}
+
+.about-main p {
+  margin: 0 0 12px;
+  text-wrap: pretty;
+}
+
+.about-main ul {
+  margin: 0 0 12px;
+  padding-inline-start: 1.4em;
+}
+
+.about-main li {
+  margin-bottom: 6px;
+}
+
+.about-main a {
+  color: var(--c-link);
+}
+
+.about-main h3 {
+  font-size: 14px;
+  margin: 16px 0 6px;
+  text-wrap: balance;
+}
+
+.about-main code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  padding: 1px 4px;
+  border-radius: 3px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+}
+
+.about-main pre {
+  margin: 8px 0 12px;
+  padding: 12px 14px;
+  overflow-x: auto;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  line-height: 1.5;
+}
+
+.about-main pre code {
+  padding: 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+}

@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>酒類等製造所マップ（平成26年度以降の新規免許のみ）</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <button
+      id="sidebar-toggle"
+      class="sidebar-toggle"
+      type="button"
+      aria-controls="sidebar"
+      aria-expanded="false"
+      aria-label="メニューを開く"
+    >☰</button>
+    <div id="sidebar-backdrop" class="sidebar-backdrop" hidden></div>
+    <aside id="sidebar" aria-label="フィルタとお気に入り">
+      <h1>酒類等製造所マップ</h1>
+      <p class="lead">
+        <strong>平成26年度以降に新規免許を取得した製造所のみ</strong><br />
+        国税庁公表「酒類等製造免許の新規取得者名等一覧」（H26〜R8）<br />
+        ※H25以前の既存蔵・廃業／取消は反映されていません。<br />
+        <a href="./about.html">このアプリについて →</a>
+      </p>
+
+      <search class="filters" aria-label="製造所フィルタ">
+        <label>
+          <span>年度（西暦）</span>
+          <div class="row">
+            <select id="filter-year-from"></select>
+            <span aria-hidden="true">〜</span>
+            <select id="filter-year-to"></select>
+          </div>
+        </label>
+
+        <label>
+          <span>免許等区分</span>
+          <select id="filter-license"></select>
+        </label>
+
+        <label>
+          <span>品目</span>
+          <select id="filter-item"></select>
+        </label>
+
+        <label>
+          <span>都道府県</span>
+          <select id="filter-pref"></select>
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="filter-only-geocoded" checked />
+          ジオコーディング成功のみ表示
+        </label>
+
+        <label class="check">
+          <input type="checkbox" id="filter-only-favorites" />
+          お気に入りのみ表示
+        </label>
+      </search>
+
+      <div id="summary" aria-live="polite"></div>
+
+      <section class="share" aria-label="共有">
+        <button
+          id="share-copy"
+          type="button"
+          title="現在のフィルタ・お気に入り・距離フィルタの全セットを 1 本のURLにまとめてクリップボードへコピーします。データはサーバーに送られず、URL のハッシュ (#s=…) に gzip+base64url で詰めるだけです。同じURLを開いた相手のブラウザだけで状態が復元されます。"
+        >🔗 現在の状態をURLでコピー</button>
+        <p class="share-hint">
+          フィルタ・お気に入り・距離フィルタを 1 本のURLにまとめてコピーします。
+          サーバーには送信されず、開いた人のブラウザだけで状態が復元されます。
+        </p>
+      </section>
+
+      <section id="poi-plugin" class="poi-plugin"></section>
+
+      <section class="favorites" aria-label="お気に入り">
+        <h2>★ お気に入り (<span id="fav-count">0</span>)</h2>
+        <ul id="fav-list"></ul>
+        <button id="fav-export" type="button">JSONエクスポート</button>
+        <button id="fav-clear" type="button">全クリア</button>
+      </section>
+    </aside>
+
+    <main id="map" aria-label="地図"></main>
+
+    <!-- トースト通知（top layer / popover="manual"） -->
+    <output id="toast" popover="manual" class="toast" aria-live="polite"></output>
+
+    <!-- 確認ダイアログ -->
+    <dialog id="confirm-dialog" closedby="any" aria-labelledby="confirm-title">
+      <form method="dialog">
+        <h2 id="confirm-title">確認</h2>
+        <p id="confirm-message"></p>
+        <menu class="dialog-actions">
+          <button type="submit" value="cancel">キャンセル</button>
+          <button type="submit" value="ok" class="primary">OK</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <!-- 情報ダイアログ -->
+    <dialog id="info-dialog" closedby="any" aria-labelledby="info-title">
+      <form method="dialog">
+        <h2 id="info-title">お知らせ</h2>
+        <p id="info-message"></p>
+        <menu class="dialog-actions">
+          <button type="submit" value="ok" class="primary">OK</button>
+        </menu>
+      </form>
+    </dialog>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

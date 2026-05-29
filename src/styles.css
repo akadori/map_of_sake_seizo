@@ -1,0 +1,727 @@
+/* =========================================================
+ * Design tokens & color scheme (Modern Web Guidance: dark-mode)
+ * =======================================================*/
+
+:root {
+  /* Tier 1: raw colors */
+  --c-bg-light: #fafafa;
+  --c-bg-dark: #161819;
+  --c-surface-light: #ffffff;
+  --c-surface-dark: #1f2224;
+  --c-text-light: #222;
+  --c-text-dark: #e6e6e6;
+  --c-text-muted-light: #555;
+  --c-text-muted-dark: #aaa;
+  --c-border-light: #ddd;
+  --c-border-dark: #3a3d40;
+  --c-border-dashed-light: #eee;
+  --c-border-dashed-dark: #2e3134;
+  --c-link-light: #1a4a8a;
+  --c-link-dark: #7eb6ff;
+  --c-accent-light: #c0392b;
+  --c-accent-dark: #ff7a6a;
+  --c-fav-light: #d4a017;
+  --c-fav-dark: #f2c14e;
+  --c-fav-bg-light: #fff4cc;
+  --c-fav-bg-dark: #3a3320;
+  --c-share-bg-light: #eef4ff;
+  --c-share-bg-dark: #1f2a3a;
+  --c-share-border-light: #b8cdf0;
+  --c-share-border-dark: #3e5a8c;
+  --c-warn-light: #b85c00;
+  --c-warn-dark: #ffb066;
+  --c-ok-light: #2d7a2d;
+  --c-ok-dark: #6cd06c;
+
+  /* Tier 2: semantic */
+  --c-bg: light-dark(var(--c-bg-light), var(--c-bg-dark));
+  --c-surface: light-dark(var(--c-surface-light), var(--c-surface-dark));
+  --c-text: light-dark(var(--c-text-light), var(--c-text-dark));
+  --c-text-muted: light-dark(var(--c-text-muted-light), var(--c-text-muted-dark));
+  --c-border: light-dark(var(--c-border-light), var(--c-border-dark));
+  --c-border-dashed: light-dark(var(--c-border-dashed-light), var(--c-border-dashed-dark));
+  --c-link: light-dark(var(--c-link-light), var(--c-link-dark));
+  --c-accent: light-dark(var(--c-accent-light), var(--c-accent-dark));
+  --c-fav: light-dark(var(--c-fav-light), var(--c-fav-dark));
+  --c-fav-bg: light-dark(var(--c-fav-bg-light), var(--c-fav-bg-dark));
+  --c-share-bg: light-dark(var(--c-share-bg-light), var(--c-share-bg-dark));
+  --c-share-border: light-dark(var(--c-share-border-light), var(--c-share-border-dark));
+  --c-warn: light-dark(var(--c-warn-light), var(--c-warn-dark));
+  --c-ok: light-dark(var(--c-ok-light), var(--c-ok-dark));
+
+  color-scheme: light dark;
+  accent-color: var(--c-link);
+  scrollbar-color: var(--c-border) transparent;
+}
+
+/* Fallback for browsers without light-dark() (pre-2024) */
+@supports not (color: light-dark(white, black)) {
+  :root {
+    --c-bg: var(--c-bg-light);
+    --c-surface: var(--c-surface-light);
+    --c-text: var(--c-text-light);
+    --c-text-muted: var(--c-text-muted-light);
+    --c-border: var(--c-border-light);
+    --c-border-dashed: var(--c-border-dashed-light);
+    --c-link: var(--c-link-light);
+    --c-accent: var(--c-accent-light);
+    --c-fav: var(--c-fav-light);
+    --c-fav-bg: var(--c-fav-bg-light);
+    --c-share-bg: var(--c-share-bg-light);
+    --c-share-border: var(--c-share-border-light);
+    --c-warn: var(--c-warn-light);
+    --c-ok: var(--c-ok-light);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --c-bg: var(--c-bg-dark);
+      --c-surface: var(--c-surface-dark);
+      --c-text: var(--c-text-dark);
+      --c-text-muted: var(--c-text-muted-dark);
+      --c-border: var(--c-border-dark);
+      --c-border-dashed: var(--c-border-dashed-dark);
+      --c-link: var(--c-link-dark);
+      --c-accent: var(--c-accent-dark);
+      --c-fav: var(--c-fav-dark);
+      --c-fav-bg: var(--c-fav-bg-dark);
+      --c-share-bg: var(--c-share-bg-dark);
+      --c-share-border: var(--c-share-border-dark);
+      --c-warn: var(--c-warn-dark);
+      --c-ok: var(--c-ok-dark);
+    }
+  }
+}
+
+/* =========================================================
+ * Reduced motion plumbing
+ * =======================================================*/
+@property --animation-reduced {
+  syntax: "*";
+  inherits: false;
+  initial-value: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: var(--animation-reduced) !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* =========================================================
+ * Base
+ * =======================================================*/
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans",
+    "Yu Gothic UI", "Segoe UI", sans-serif;
+  color: var(--c-text);
+  background: var(--c-bg);
+}
+
+body {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  block-size: 100dvh;
+}
+
+a {
+  color: var(--c-link);
+}
+
+/* Focus ring — Modern Web Guidance: accessibility / css.focus */
+:where(a:any-link, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--c-link);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* =========================================================
+ * Sidebar
+ * =======================================================*/
+
+#sidebar {
+  overflow-y: auto;
+  padding: 16px 18px;
+  border-inline-end: 1px solid var(--c-border);
+  background: var(--c-bg);
+}
+
+#sidebar h1 {
+  font-size: 18px;
+  margin: 0 0 4px;
+  text-wrap: balance;
+}
+
+#sidebar h2 {
+  text-wrap: balance;
+}
+
+.lead {
+  font-size: 12px;
+  color: var(--c-text-muted);
+  margin: 0 0 16px;
+  text-wrap: pretty;
+}
+
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: var(--c-text);
+}
+
+.filters .row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.filters select,
+.filters input[type="number"] {
+  font-size: 13px;
+  padding: 4px 6px;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+
+.filters .check {
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 24px; /* WCAG 2.5.8 touch target */
+}
+
+#summary {
+  margin-top: 16px;
+  font-size: 12px;
+  color: var(--c-text);
+  border-top: 1px dashed var(--c-border);
+  padding-top: 10px;
+}
+
+#map {
+  inline-size: 100%;
+  block-size: 100dvh;
+}
+
+/* =========================================================
+ * Mobile sidebar toggle
+ * =======================================================*/
+
+.sidebar-toggle {
+  display: none;
+}
+.sidebar-backdrop {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  body {
+    grid-template-columns: 1fr;
+  }
+  #sidebar {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: min(340px, 88vw);
+    z-index: 1001;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.2);
+  }
+  body.sidebar-open #sidebar {
+    transform: translateX(0);
+  }
+  .sidebar-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    inset-block-start: 8px;
+    inset-inline-start: 8px;
+    z-index: 1002;
+    inline-size: 40px;
+    block-size: 40px;
+    font-size: 20px;
+    border: 1px solid var(--c-border);
+    border-radius: 6px;
+    background: var(--c-surface);
+    color: var(--c-text);
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+  }
+  body.sidebar-open .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    background: rgba(0, 0, 0, 0.4);
+  }
+  #map {
+    block-size: 100dvh;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #sidebar {
+    transition: none;
+  }
+}
+
+/* =========================================================
+ * Popup (Leaflet)
+ * =======================================================*/
+
+.popup h3 {
+  margin: 0 0 4px;
+  font-size: 14px;
+  text-wrap: balance;
+}
+
+.popup dl {
+  margin: 0;
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 2px 8px;
+}
+
+.popup dt {
+  color: var(--c-text-muted);
+}
+
+.popup dd {
+  margin: 0;
+}
+
+.popup .fav-btn {
+  margin-top: 8px;
+  font-size: 12px;
+  padding: 6px 10px;
+  min-block-size: 28px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.popup .fav-btn[aria-pressed="true"] {
+  background: var(--c-fav-bg);
+  border-color: var(--c-fav);
+  color: var(--c-fav);
+}
+
+/* =========================================================
+ * Favorites
+ * =======================================================*/
+
+.favorites {
+  margin-top: 18px;
+  border-top: 1px solid var(--c-border);
+  padding-top: 12px;
+}
+
+.favorites h2 {
+  font-size: 13px;
+  margin: 0 0 6px;
+}
+
+.favorites ul {
+  list-style: none;
+  margin: 0 0 8px;
+  padding: 0;
+  max-block-size: 260px;
+  overflow-y: auto;
+  font-size: 12px;
+}
+
+/* List entry enter/exit (Modern Web Guidance: animate-element-entry-exit) */
+.favorites li {
+  padding: 4px 6px;
+  border-bottom: 1px dashed var(--c-border-dashed);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  min-block-size: 28px;
+  opacity: 1;
+  translate: 0;
+  transition:
+    display 0.2s,
+    opacity 0.2s ease-out,
+    translate 0.2s ease-out;
+  transition-behavior: allow-discrete;
+}
+@starting-style {
+  .favorites li {
+    opacity: 0;
+    translate: -8px 0;
+  }
+}
+.favorites li[hidden] {
+  display: none;
+  opacity: 0;
+  translate: -8px 0;
+}
+
+.favorites li .fav-name {
+  cursor: pointer;
+  color: var(--c-link);
+  text-decoration: underline;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: transparent;
+  border: 0;
+  font: inherit;
+  text-align: start;
+  padding: 0;
+}
+
+.favorites li .fav-remove {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--c-text-muted);
+  font-size: 14px;
+  padding: 0;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+
+.favorites button {
+  font-size: 11px;
+  padding: 6px 10px;
+  min-block-size: 28px;
+  margin-inline-end: 6px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+/* =========================================================
+ * Share button
+ * =======================================================*/
+
+.share {
+  margin-top: 12px;
+}
+.share button {
+  font-size: 12px;
+  padding: 8px 12px;
+  min-block-size: 32px;
+  border: 1px solid var(--c-share-border);
+  background: var(--c-share-bg);
+  color: var(--c-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.share-hint {
+  margin: 6px 0 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--c-text-muted);
+}
+
+/* =========================================================
+ * Toast (popover="manual" / top layer)
+ * Modern Web Guidance: persistent-toast-notifications
+ * =======================================================*/
+
+.toast {
+  position: fixed;
+  inset-block-end: 24px;
+  inset-inline-start: 50%;
+  translate: -50% 0;
+  margin: 0;
+  max-inline-size: min(560px, calc(100dvw - 32px));
+  padding: 12px 16px;
+  border: 1px solid var(--c-border);
+  border-radius: 8px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.25);
+  opacity: 1;
+  transition:
+    display 0.2s,
+    opacity 0.2s ease-out,
+    overlay 0.2s allow-discrete,
+    translate 0.2s ease-out;
+  transition-behavior: allow-discrete;
+}
+.toast:not(:popover-open) {
+  opacity: 0;
+  translate: -50% 16px;
+}
+@starting-style {
+  .toast:popover-open {
+    opacity: 0;
+    translate: -50% 16px;
+  }
+}
+.toast.is-ok { border-inline-start: 4px solid var(--c-ok); }
+.toast.is-warn { border-inline-start: 4px solid var(--c-warn); }
+.toast.is-error { border-inline-start: 4px solid var(--c-accent); }
+
+/* =========================================================
+ * Dialogs (Modern Web Guidance: light-dismiss-a-dialog)
+ * =======================================================*/
+
+dialog {
+  border: 1px solid var(--c-border);
+  border-radius: 10px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  padding: 0;
+  max-inline-size: min(420px, calc(100dvw - 32px));
+  box-shadow: 0 12px 32px rgb(0 0 0 / 0.35);
+}
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.4);
+  backdrop-filter: blur(2px);
+}
+dialog form {
+  padding: 20px 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+dialog h2 {
+  margin: 0;
+  font-size: 16px;
+  text-wrap: balance;
+}
+dialog p {
+  margin: 0;
+  font-size: 14px;
+  text-wrap: pretty;
+}
+.dialog-actions {
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  list-style: none;
+}
+.dialog-actions button {
+  font-size: 13px;
+  padding: 8px 14px;
+  min-block-size: 32px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.dialog-actions button.primary {
+  background: var(--c-link);
+  border-color: var(--c-link);
+  color: var(--c-bg);
+}
+
+/* POI editor dialog */
+.poi-editor-dialog {
+  max-inline-size: min(720px, calc(100dvw - 32px));
+  inline-size: 100%;
+}
+.poi-editor-form {
+  gap: 10px;
+}
+.poi-editor-hint {
+  color: var(--c-text-muted);
+  font-size: 12px;
+}
+.poi-editor-name,
+.poi-editor-body {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+}
+.poi-editor-name input,
+.poi-editor-body textarea {
+  font-size: 13px;
+  padding: 6px 8px;
+  border: 1px solid var(--c-border);
+  border-radius: 4px;
+  background: var(--c-surface);
+  color: var(--c-text);
+  font-family: inherit;
+}
+.poi-editor-body textarea {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  min-block-size: 240px;
+  resize: vertical;
+  white-space: pre;
+  overflow: auto;
+}
+.poi-editor-error {
+  color: #c4302b;
+  font-size: 12px;
+  margin: 0;
+}
+.poi-editor-sample {
+  margin-inline-end: auto;
+}
+
+/* =========================================================
+ * POI plugin
+ * =======================================================*/
+.poi-plugin {
+  margin-top: 18px;
+  border-top: 1px solid var(--c-border);
+  padding-top: 12px;
+}
+.poi-header h2 {
+  font-size: 13px;
+  margin: 0 0 4px;
+}
+.poi-help {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  margin: 0 0 8px;
+}
+.poi-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.poi-actions button {
+  font-size: 11px;
+  padding: 6px 10px;
+  min-block-size: 28px;
+  border: 1px solid var(--c-border);
+  background: var(--c-surface);
+  color: var(--c-text);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.poi-actions .poi-preset {
+  background: var(--c-share-bg);
+  border-color: var(--c-share-border);
+}
+.poi-empty {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  margin: 0;
+}
+.poi-sets {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.poi-card {
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  background: var(--c-surface);
+  font-size: 12px;
+}
+.poi-card-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.poi-card-header .poi-name {
+  flex: 1;
+  font-size: 12px;
+  padding: 2px 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  color: var(--c-text);
+}
+.poi-card-header .poi-name:hover,
+.poi-card-header .poi-name:focus {
+  border-color: var(--c-border);
+  background: var(--c-bg);
+}
+.poi-card-header .poi-remove {
+  border: none;
+  background: transparent;
+  color: var(--c-text-muted);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+.poi-card-header .poi-edit {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+.poi-meta {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  margin: 4px 0 6px;
+}
+.poi-radius {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0;
+}
+.poi-radius input[type="number"] {
+  inline-size: 60px;
+  font-size: 12px;
+  padding: 4px 6px;
+  border: 1px solid var(--c-border);
+  border-radius: 3px;
+  background: var(--c-surface);
+  color: var(--c-text);
+}
+.poi-groups {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  margin-top: 6px;
+  font-size: 11px;
+}
+.poi-groups label {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.poi-groups .poi-all {
+  font-size: 10px;
+  padding: 4px 8px;
+  min-block-size: 24px;
+  border: 1px solid var(--c-border);
+  background: var(--c-bg);
+  color: var(--c-text);
+  border-radius: 3px;
+  cursor: pointer;
+}

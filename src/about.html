@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="light dark" />
+    <title>このアプリについて — 酒類等製造所マップ</title>
+    <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./about.css" />
+  </head>
+  <body class="about-page">
+    <main class="about-main">
+      <p><a href="./index.html">← マップに戻る</a></p>
+
+      <h1>このアプリについて</h1>
+
+      <h2>何を表示しているか</h2>
+      <p>
+        国税庁が公表している
+        <a
+          href="https://www.nta.go.jp/taxes/sake/menkyo/shinki/seizo/02/zenkoku/"
+          target="_blank"
+          rel="noopener"
+          >「酒類等製造免許の新規取得者名等一覧」</a
+        >
+        のうち、<strong>平成26年度（2014年度）から令和8年度（3月分まで）に新規取得された全国の酒類等製造免許</strong>
+        を地図上にプロットしています。住所は国土地理院の
+        <a
+          href="https://msearch.gsi.go.jp/address-search/AddressSearch"
+          target="_blank"
+          rel="noopener"
+          >住所検索API</a
+        >
+        で緯度経度に変換しています。
+      </p>
+
+      <h2>このアプリの成り立ち</h2>
+      <p>
+        昨今クラフトサケ／クラフトビール／クラフトジン等の小規模酒類製造免許の新規取得が活発で、
+        「最近どこに新しい醸造所ができたのか」をひと目で見たい、という個人的な動機で作りました。
+        国税庁の Excel が年度ごとにバラバラに公開されていて見比べづらかったため、
+        年度・免許等区分・品目・都道府県・任意のノード群からの距離（プラグイン）などで横串フィルタできるマップにしています。
+      </p>
+      <p>
+        UI は素朴ですが、お気に入り機能（ブラウザの localStorage に保存）と
+        お気に入りの JSON エクスポートに対応しているので、
+        気になった醸造所を自分で蓄積してメモ代わりに使えます。
+      </p>
+
+      <h2>共有URL機能</h2>
+      <p>
+        サイドバーの「🔗 現在の状態をURLでコピー」ボタンで、
+        以下の状態をすべて 1 本のURLにまとめてクリップボードへコピーできます。
+      </p>
+      <ul>
+        <li>各フィルタ（年度範囲・免許等区分・品目・都道府県・「ジオコーディング成功のみ」「お気に入りのみ」）</li>
+        <li>お気に入り一覧</li>
+        <li>取り込んだ距離フィルタの全セット（名前・半径・選択グループ・ポイント群）</li>
+      </ul>
+      <p>
+        状態 JSON を gzip 圧縮して base64url にし、URL のハッシュ
+        （<code>#s=...</code>）に詰めています。サーバー側には何も送信されません。
+        受け取った人が同じURLを開くと、ブラウザだけで状態が復元されます。
+      </p>
+      <p>
+        圧縮後のURLが概ね 8,000 文字を超えると黄色で、32,000 文字を超えると赤で警告が出ます。
+        ブラウザは数万文字でも問題なく扱えますが、X(Twitter)等のSNSでは長すぎると貼れない/切れることがあるためです。
+        距離フィルタに数千点規模のJSONを入れた場合などは、共有相手にURLではなくJSONファイルを直接渡すことをおすすめします。
+      </p>
+
+      <h2>データの限界 / 注意</h2>
+      <ul>
+        <li>
+          <strong>平成26年度より前のデータは含まれていません。</strong>
+          国税庁がこの「新規取得者一覧」シリーズを公開し始めたのが平成26年度からのため、
+          それ以前の既存蔵（江戸〜平成初期に免許取得した酒蔵など）は表示されません。
+        </li>
+        <li>
+          <strong>廃業・免許取消は反映されません。</strong>
+          このリストは「新規取得」のフロー情報のみで、
+          その後事業を停止した製造所も地図上には残り続けます。
+        </li>
+        <li>
+          住所のジオコーディングに失敗した数十件は地図に乗りません
+          （フィルタ「ジオコーディング成功のみ表示」をOFFにすると一覧でカウントは確認できます）。
+        </li>
+        <li>
+          距離フィルタは「ノードからの直線距離」で絞り込みます。
+          ノードJSONはブラウザ上で取り込み、localStorage に保存されます。
+        </li>
+      </ul>
+
+      <h2>技術スタック</h2>
+      <ul>
+        <li>TypeScript + Vite + Leaflet</li>
+        <li>地図タイル: 国土地理院「淡色地図」</li>
+        <li>ジオコーディング: 国土地理院 住所検索API</li>
+        <li>元データ: 国税庁公表 Excel（H26〜R8）</li>
+      </ul>
+
+      <h2 id="poi-json">距離フィルタ用 JSON の形式</h2>
+      <p>
+        サイドバーの「📂 JSONを取り込む」では、任意の地点群（駅・観光地・支店等）
+        からの直線距離で製造所を絞り込めます。以下のいずれかの形式の JSON ファイルを受け付けます。
+      </p>
+
+      <h3>1. シンプルな配列形式（推奨）</h3>
+      <p>
+        <code>lat</code>（緯度）と <code>lon</code>（経度）は <strong>数値</strong> で必須。
+        <code>name</code> は任意、<code>group</code> はグループ別 ON/OFF 切替の単位として使われます。
+      </p>
+      <pre><code>[
+  { "name": "東京駅",   "lat": 35.6812, "lon": 139.7671, "group": "JR山手線" },
+  { "name": "新宿駅",   "lat": 35.6896, "lon": 139.7006, "group": "JR山手線" },
+  { "name": "霞ヶ関駅", "lat": 35.6735, "lon": 139.7521, "group": "東京メトロ" }
+]</code></pre>
+
+
+      <h3>2. GeoJSON FeatureCollection</h3>
+      <p>
+        OpenStreetMap や ArcGIS など各種ツールが吐く標準形式。
+        <code>geometry.coordinates</code> は <strong>[経度, 緯度] の順</strong>（GeoJSON 仕様）。
+      </p>
+      <pre><code>{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [139.7671, 35.6812] },
+      "properties": { "name": "東京駅", "group": "JR山手線" }
+    }
+  ]
+}</code></pre>
+      <p>
+        <code>properties</code> 内のキーは <code>name</code> / <code>title</code>、
+        グループは <code>group</code> で認識します。
+        <code>Point</code> 以外のジオメトリ（LineString 等）は無視されます。
+      </p>
+
+      <h3>動作・制限</h3>
+      <ul>
+        <li>距離は<strong>直線距離（大円距離）</strong>で計算します。鉄道線路や道路に沿った距離ではありません。</li>
+        <li>緯度経度がないエントリ、数値でない緯度経度は黙って捨てます。</li>
+        <li>取り込んだセットはブラウザの <code>localStorage</code> に保存され、リロードしても残ります。</li>
+        <li>複数セットを取り込んだ場合は <strong>AND 条件</strong>（全セットそれぞれの半径内）で絞り込みます。</li>
+      </ul>
+
+      <h2>ソース</h2>
+      <p>
+        本プロジェクトは個人の趣味で作成したものであり、
+        国税庁等とは一切関係ありません。
+        データの正確性は保証されません。最終的な情報は必ず一次資料で確認してください。
+      </p>
+
+      <h2>プライバシー</h2>
+      <ul>
+        <li>
+          フィルタ・お気に入り・距離フィルタの状態は、すべてお使いのブラウザの
+          <code>localStorage</code> にのみ保存されます。サーバー側には送信されません。
+        </li>
+        <li>
+          「🔗 現在の状態をURLでコピー」で生成されるURLも、状態を URL ハッシュに
+          gzip+base64url で詰めるだけで、サーバーには送られません。
+        </li>
+      </ul>
+
+      <p><a href="./index.html">← マップに戻る</a></p>
+    </main>
+  </body>
+</html>
